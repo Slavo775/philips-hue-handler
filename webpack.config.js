@@ -1,26 +1,43 @@
-const path = require('path');
+const path = require('path')
 const eslintWebpackPlugin = require('eslint-webpack-plugin')
 const options = {
-    extensions: ['ts', 'js']
+    context: './src/',
+    extensions: ['ts', 'js'],
 }
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: ['webpack/hot/dev-server', path.resolve(__dirname, 'src')],
     devtool: 'inline-source-map',
     module: {
-        rules: [{
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
-        }]
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+        ],
     },
     resolve: {
-        extensions: ['.ts', '.js', '.tsx', 'html']
+        extensions: ['.ts', '.js', '.tsx', 'html'],
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
     },
     plugins: [new eslintWebpackPlugin(options)],
-    watch: true
-};
+    watch: true,
+    watchOptions: {
+        poll: true,
+        ignored: /node_modules/,
+    },
+    devServer: {
+        hot: true,
+        inline: true,
+        https: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+        },
+    },
+}
