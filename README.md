@@ -11,3 +11,4 @@ This little project allow connect and handle to philips hue bridge.
 First of all you need initializing hue bridge.
 `await initBridge('https://bridgeUrl/', 'bridgeApiKey'`
 This method returns Map of lights and groups.
+All data from Hue is stored in model HuePropsModel
