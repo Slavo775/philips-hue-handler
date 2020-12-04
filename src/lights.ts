@@ -1,4 +1,5 @@
 import Light, { Capabilities, Config, LightState, Swupdate } from './models/Light'
+import { baseApi, namedRoutes } from './api/routes'
 
 export interface LightFromApi {
     capabilities: Capabilities
@@ -43,4 +44,18 @@ const lightToClass = async (light: LightFromApi, id: number): Promise<Light> => 
     lightModel.uniqueid = light.uniqueid
 
     return lightModel
+}
+
+export const getAllLights = async (): Promise<Map<number, Light>> => {
+    try {
+        const { data } = await baseApi.get('/')
+        const allLightsMap = new Map<number, Light>()
+        Object.keys(data).forEach((key) => {
+            const light = data[+key]
+            lightToClass(light, +key).then((light) => allLightsMap.set(+key, light))
+        })
+        return allLightsMap
+    } catch (e) {
+        throw e
+    }
 }

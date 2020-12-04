@@ -1,34 +1,38 @@
+const webpack = require('webpack')
 const path = require('path')
-const eslintWebpackPlugin = require('eslint-webpack-plugin')
-const options = {
-    context: './src/',
-    extensions: ['ts', 'js'],
-}
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
-    entry: ['webpack/hot/dev-server', path.resolve(__dirname, 'src')],
-    devtool: 'inline-source-map',
+    entry: ['webpack/hot/poll?100', './src/index.ts'],
+    watch: true,
+    target: 'node',
+    externals: [
+        nodeExternals({
+            whitelist: ['webpack/hot/poll?100'],
+        }),
+
+    ],
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
         ],
     },
+    mode: 'development',
     resolve: {
-        extensions: ['.ts', '.js', '.tsx', 'html'],
+        extensions: ['.tsx', '.ts', '.js'],
     },
+    plugins: [new webpack.HotModuleReplacementPlugin()],
     output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, 'dist'),
+        filename: 'index.js',
     },
-    plugins: [new eslintWebpackPlugin(options)],
-    watch: true,
     watchOptions: {
         poll: true,
-        ignored: /node_modules/,
+        ignored: [/node_modules/, 'dist'],
     },
     devServer: {
         hot: true,
